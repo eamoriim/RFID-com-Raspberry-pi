@@ -45,9 +45,3 @@ def inicializar_banco():
                     REFERENCES colaboradores(id)
             );
         """)
-
-
-if __name__ == "__main__":
-    inicializar_banco()
-    print("Banco de dados inicializado com sucesso!")
-    print(f"Local do banco: {DATABASE_PATH}")
