@@ -1,0 +1,54 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Acesso RFID</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="topo">
+        <div>
+            <h1>Controle de Acesso RFID</h1>
+            <p>Painel de monitoramento da Raspberry Pi</p>
+        </div>
+        <span id="status-servidor" class="status">Verificando...</span>
+    </header>
+
+    <main class="container">
+        <section class="resumo">
+            <article class="cartao">
+                <span>Servidor</span>
+                <h2 id="servidor">Verificando</h2>
+                <p>Estado da aplicação</p>
+            </article>
+
+            <article class="cartao">
+                <span>Banco de dados</span>
+                <h2 id="banco">Verificando</h2>
+                <p>Estado do SQLite</p>
+            </article>
+
+            <article class="cartao">
+                <span>Controle de acesso</span>
+                <h2 id="acesso">Em preparação</h2>
+                <p>Leitor RFID ainda não integrado</p>
+            </article>
+        </section>
+
+        <section class="painel">
+            <h2>Monitoramento</h2>
+            <p id="ultima-atualizacao">Aguardando primeira consulta...</p>
+            <button id="atualizar">Atualizar status</button>
+            <p id="mensagem" role="status"></p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Projeto de Controle de Acesso RFID com Raspberry Pi</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
