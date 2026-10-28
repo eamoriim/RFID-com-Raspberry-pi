@@ -4,49 +4,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@10..144,400..700&display=swap" rel="stylesheet">
+
     <title>Controle de Acesso RFID</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="topo">
-        <div>
-            <h1>Controle de Acesso RFID</h1>
-            <p>Painel de monitoramento da Raspberry Pi</p>
+        <div class="marca">
+            <div class="marca-icone">RF</div>
+            <div>
+                <h1>Controle de Acesso RFID</h1>
+                <p>Painel de monitoramento da Raspberry Pi</p>
+            </div>
         </div>
+
         <span id="status-servidor" class="status">Verificando...</span>
     </header>
 
     <main class="container">
+        <section class="introducao">
+            <div>
+                <span class="sobretitulo">PAINEL DE CONTROLE</span>
+                <h2>Visão geral</h2>
+                <p>Acompanhe o sistema e gerencie os colaboradores.</p>
+            </div>
+        </section>
+
         <section class="resumo">
             <article class="cartao">
-                <span>Servidor</span>
+                <div class="cartao-topo">
+                    <span class="cartao-icone">01</span>
+                    <span class="cartao-legenda">APLICAÇÃO</span>
+                </div>
+                <p>Servidor</p>
                 <h2 id="servidor">Verificando</h2>
-                <p>Estado da aplicação</p>
+                <span class="cartao-descricao">Estado da aplicação</span>
             </article>
 
             <article class="cartao">
-                <span>Banco de dados</span>
+                <div class="cartao-topo">
+                    <span class="cartao-icone">02</span>
+                    <span class="cartao-legenda">ARMAZENAMENTO</span>
+                </div>
+                <p>Banco de dados</p>
                 <h2 id="banco">Verificando</h2>
-                <p>Estado do SQLite</p>
+                <span class="cartao-descricao">Estado do SQLite</span>
             </article>
 
             <article class="cartao">
-                <span>Controle de acesso</span>
+                <div class="cartao-topo">
+                    <span class="cartao-icone">03</span>
+                    <span class="cartao-legenda">HARDWARE</span>
+                </div>
+                <p>Controle de acesso</p>
                 <h2 id="acesso">Em preparação</h2>
-                <p>Leitor RFID ainda não integrado</p>
+                <span class="cartao-descricao">Leitor RFID ainda não integrado</span>
             </article>
         </section>
 
         <section class="painel">
-            <h2>Monitoramento</h2>
-            <p id="ultima-atualizacao">Aguardando primeira consulta...</p>
-            <button id="atualizar">Atualizar status</button>
-            <p id="mensagem" role="status"></p>
+            <div class="painel-cabecalho">
+                <div>
+                    <span class="sobretitulo">SISTEMA</span>
+                    <h2>Monitoramento</h2>
+                    <p id="ultima-atualizacao">Aguardando primeira consulta...</p>
+                </div>
+                <button id="atualizar" type="button" class="botao-secundario">
+                    Atualizar status
+                </button>
+            </div>
+            <p id="mensagem" class="mensagem" role="status"></p>
+        </section>
+
+        <section class="painel">
+            <div class="painel-cabecalho">
+                <div>
+                    <span class="sobretitulo">GERENCIAMENTO</span>
+                    <h2>Cadastrar colaborador</h2>
+                    <p>Preencha os dados para adicionar uma pessoa ao sistema.</p>
+                </div>
+            </div>
+
+            <form id="form-colaborador" class="formulario">
+                <div class="campo">
+                    <label for="nome">Nome completo</label>
+                    <input
+                        type="text"
+                        id="nome"
+                        name="nome"
+                        placeholder="Ex.: Maria da Silva"
+                        autocomplete="name"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="campo">
+                    <label for="identificacao">Identificação</label>
+                    <input
+                        type="text"
+                        id="identificacao"
+                        name="identificacao"
+                        placeholder="Ex.: COLAB003"
+                        maxlength="100"
+                        required
+                    >
+                    <span class="ajuda">Utilize uma identificação única.</span>
+                </div>
+
+                <div class="acoes-formulario">
+                    <button id="cadastrar" type="submit">
+                        Cadastrar colaborador
+                    </button>
+                </div>
+
+                <p id="mensagem-cadastro" class="mensagem" role="status"></p>
+            </form>
+        </section>
+
+        <section class="painel">
+            <div class="painel-cabecalho">
+                <div>
+                    <span class="sobretitulo">REGISTROS</span>
+                    <h2>Colaboradores cadastrados</h2>
+                    <p>Consulte as pessoas registradas no banco de dados.</p>
+                </div>
+
+                <button
+                    id="atualizar-colaboradores"
+                    type="button"
+                    class="botao-secundario"
+                >
+                    Atualizar lista
+                </button>
+            </div>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Identificação</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-colaboradores">
+                        <tr>
+                            <td colspan="4">Carregando colaboradores...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </main>
 
     <footer>
-        <p>Projeto de Controle de Acesso RFID com Raspberry Pi</p>
+        <p>Controle de Acesso RFID · Raspberry Pi</p>
     </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
