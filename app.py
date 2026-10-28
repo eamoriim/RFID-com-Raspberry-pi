@@ -1,12 +1,15 @@
 
 from flask import Flask, jsonify, render_template
 from app.database import inicializar_banco
+from app.routes import rotas
 
-app = Flask(
+app = Flask( 
     __name__,
     template_folder="app/templates",
     static_folder="app/static"
 )
+
+app.register_blueprint(rotas)
 
 @app.route("/")
 def inicio():

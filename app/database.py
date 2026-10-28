@@ -45,3 +45,24 @@ def inicializar_banco():
                     REFERENCES colaboradores(id)
             );
         """)
+
+def cadastrar_colaborador(nome, identificacao):
+    with conectar() as conexao:
+        cursor = conexao.execute(
+            """
+            INSERT INTO colaboradores (nome, identificacao)
+            VALUES (?, ?)
+            """,
+            (nome, identificacao)
+        )
+        return cursor.lastrowid
+def listar_colaboradores():
+    with conectar() as conexao:
+        colaboradores = conexao.execute(
+            """
+            SELECT id, nome, identificacao, ativo
+            FROM colaboradores
+            ORDER BY nome
+            """
+        ).fetchall()
+        return [dict(colaborador) for colaborador in colaboradores]
