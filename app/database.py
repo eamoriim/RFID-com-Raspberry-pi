@@ -66,3 +66,52 @@ def listar_colaboradores():
             """
         ).fetchall()
         return [dict(colaborador) for colaborador in colaboradores]
+
+def cadastrar_cartao(uid, colaborador_id, permitido=False):
+    with conectar() as conexao:
+        cursor = conexao.execute(
+            """
+            INSERT INTO cartoes (uid, colaborador_id, permitido)
+            VALUES (?, ?, ?)
+            """,
+            (uid, colaborador_id, int(permitido))
+        )
+        return cursor.lastrowid
+
+
+def processar_acesso(uid):
+    with conectar() as conexao:
+        cartao = conexao.execute(
+            """
+            SELECT c.id, c.colaborador_id, c.permitido,
+                   p.nome, p.ativo
+            FROM cartoes c
+            JOIN colaboradores p ON p.id = c.colaborador_id
+            WHERE c.uid = ?
+            """,
+            (uid,)
+        ).fetchone()
+
+        autorizado = bool(
+            cartao
+            and cartao["permitido"] == 1
+            and cartao["ativo"] == 1
+        )
+
+        colaborador_id = cartao["colaborador_id"] if cartao else None
+        evento = "ACESSO_AUTORIZADO" if autorizado else "ACESSO_NEGADO"
+
+        conexao.execute(
+            """
+            INSERT INTO registros (colaborador_id, uid, evento, autorizado)
+            VALUES (?, ?, ?, ?)
+            """,
+            (colaborador_id, uid, evento, int(autorizado))
+        )
+
+        return {
+            "uid": uid,
+            "autorizado": autorizado,
+            "evento": evento,
+            "colaborador": cartao["nome"] if cartao else None
+        }
