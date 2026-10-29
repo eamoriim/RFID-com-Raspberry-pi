@@ -14,6 +14,10 @@ const mensagemCadastro = document.getElementById("mensagem-cadastro");
 const listaColaboradores = document.getElementById("lista-colaboradores");
 const botaoAtualizarColaboradores = document.getElementById("atualizar-colaboradores");
 
+const listaRegistros = document.getElementById("lista-registros");
+const botaoAtualizarRegistros = document.getElementById("atualizar-registros");
+const mensagemRegistros = document.getElementById("mensagem-registros");
+
 async function atualizarStatus() {
     botaoAtualizar.disabled = true;
     mensagem.textContent = "Consultando servidor...";
@@ -135,11 +139,73 @@ async function cadastrarColaborador(evento) {
     }
 }
 
+async function atualizarRegistros() {
+    listaRegistros.replaceChildren();
+    mensagemRegistros.textContent = "Carregando histórico...";
+
+    try {
+        const resposta = await fetch("/api/registros");
+
+        if (!resposta.ok) {
+            throw new Error("Não foi possível carregar o histórico.");
+        }
+
+        const registros = await resposta.json();
+
+        if (registros.length === 0) {
+            const linha = document.createElement("tr");
+            const celula = document.createElement("td");
+
+            celula.colSpan = 4;
+            celula.textContent = "Nenhum acesso registrado.";
+            linha.appendChild(celula);
+            listaRegistros.appendChild(linha);
+            mensagemRegistros.textContent = "";
+            return;
+        }
+
+        registros.forEach((registro) => {
+            const linha = document.createElement("tr");
+            const valores = [
+                registro.data_hora || "Não informada",
+                registro.colaborador || "Desconhecido",
+                registro.uid,
+                Number(registro.autorizado) === 1
+                    ? "Acesso autorizado"
+                    : "Acesso negado"
+            ];
+
+            valores.forEach((valor) => {
+                const celula = document.createElement("td");
+                celula.textContent = valor;
+                linha.appendChild(celula);
+            });
+
+            listaRegistros.appendChild(linha);
+        });
+
+        mensagemRegistros.textContent =
+            `${registros.length} registro(s) encontrado(s).`;
+    } catch (erro) {
+        const linha = document.createElement("tr");
+        const celula = document.createElement("td");
+
+        celula.colSpan = 4;
+        celula.textContent = "Erro ao carregar o histórico.";
+        linha.appendChild(celula);
+        listaRegistros.appendChild(linha);
+        mensagemRegistros.textContent = erro.message;
+    }
+}
+
 botaoAtualizar.addEventListener("click", atualizarStatus);
 formulario.addEventListener("submit", cadastrarColaborador);
 botaoAtualizarColaboradores.addEventListener("click", atualizarColaboradores);
+botaoAtualizarRegistros.addEventListener("click", atualizarRegistros);
 
 atualizarStatus();
 atualizarColaboradores();
+atualizarRegistros();
 
 setInterval(atualizarStatus, 10000);
+setInterval(atualizarRegistros, 5000);

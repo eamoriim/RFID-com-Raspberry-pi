@@ -163,6 +163,44 @@
                 </table>
             </div>
         </section>
+
+        <section class="painel">
+            <div class="painel-cabecalho">
+                <div>
+                    <span class="sobretitulo">SEGURANÇA</span>
+                    <h2>Histórico de acessos</h2>
+                    <p>Consulte as tentativas de acesso registradas pelo sistema.</p>
+                </div>
+
+                <button
+                    id="atualizar-registros"
+                    type="button"
+                    class="botao-secundario"
+                >
+                    Atualizar histórico
+                </button>
+            </div>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data e hora</th>
+                            <th>Colaborador</th>
+                            <th>UID do cartão</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-registros">
+                        <tr>
+                            <td colspan="4">Carregando histórico...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p id="mensagem-registros" class="mensagem" role="status"></p>
+        </section>
     </main>
 
     <footer>

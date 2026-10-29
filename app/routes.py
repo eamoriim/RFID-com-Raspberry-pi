@@ -5,7 +5,8 @@ from app.database import (
     cadastrar_colaborador,
     listar_colaboradores,
     cadastrar_cartao,
-    processar_acesso
+    processar_acesso,
+    listar_registros
 )
 
 rotas = Blueprint("rotas", __name__)
@@ -88,3 +89,6 @@ def criar_cartao():
         return jsonify({
             "erro": "O UID já está cadastrado ou o colaborador não existe."
         }), 409
+@rotas.route("/api/registros", methods=["GET"])
+def obter_registros():
+    return jsonify(listar_registros())

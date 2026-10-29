@@ -11,8 +11,6 @@ def conectar():
     conexao = sqlite3.connect(DATABASE_PATH)
     conexao.row_factory = sqlite3.Row
     return conexao
-
-
 def inicializar_banco():
     with conectar() as conexao:
         conexao.executescript("""
@@ -45,7 +43,6 @@ def inicializar_banco():
                     REFERENCES colaboradores(id)
             );
         """)
-
 def cadastrar_colaborador(nome, identificacao):
     with conectar() as conexao:
         cursor = conexao.execute(
@@ -66,7 +63,6 @@ def listar_colaboradores():
             """
         ).fetchall()
         return [dict(colaborador) for colaborador in colaboradores]
-
 def cadastrar_cartao(uid, colaborador_id, permitido=False):
     with conectar() as conexao:
         cursor = conexao.execute(
@@ -77,8 +73,6 @@ def cadastrar_cartao(uid, colaborador_id, permitido=False):
             (uid, colaborador_id, int(permitido))
         )
         return cursor.lastrowid
-
-
 def processar_acesso(uid):
     with conectar() as conexao:
         cartao = conexao.execute(
@@ -115,3 +109,22 @@ def processar_acesso(uid):
             "evento": evento,
             "colaborador": cartao["nome"] if cartao else None
         }
+def listar_registros():
+    with conectar() as conexao:
+        registros = conexao.execute(
+            """
+            SELECT
+                r.id,
+                r.uid,
+                r.evento,
+                r.autorizado,
+                r.data_hora,
+                c.nome AS colaborador
+            FROM registros r
+            LEFT JOIN colaboradores c
+                ON c.id = r.colaborador_id
+            ORDER BY r.id DESC
+            """
+        ).fetchall()
+
+        return [dict(registro) for registro in registros]
