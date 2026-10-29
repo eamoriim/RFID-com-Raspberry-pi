@@ -167,6 +167,54 @@
         <section class="painel">
             <div class="painel-cabecalho">
                 <div>
+                    <span class="sobretitulo">GERENCIAMENTO</span>
+                    <h2>Cadastrar cartão</h2>
+                    <p>Associe um cartão a um colaborador e defina sua permissão de acesso.</p>
+                </div>
+            </div>
+
+            <form id="form-cartao" class="formulario">
+                <div class="campo">
+                    <label for="uid-cartao">UID do cartão</label>
+                    <input
+                        type="text"
+                        id="uid-cartao"
+                        name="uid"
+                        placeholder="Ex.: CARTAO_TESTE_002"
+                        maxlength="100"
+                        required
+                    >
+                    <span class="ajuda">Use um UID de teste enquanto o leitor RFID não estiver integrado.</span>
+                </div>
+
+                <div class="campo">
+                    <label for="colaborador-cartao">Colaborador</label>
+                    <select id="colaborador-cartao" name="colaborador_id" required>
+                        <option value="">Selecione um colaborador</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="cartao-permitido">Permissão de acesso</label>
+                    <select id="cartao-permitido" name="permitido" required>
+                        <option value="true">Permitido</option>
+                        <option value="false">Bloqueado</option>
+                    </select>
+                </div>
+
+                <div class="acoes-formulario">
+                    <button id="cadastrar-cartao" type="submit">
+                        Cadastrar cartão
+                    </button>
+                </div>
+
+                <p id="mensagem-cartao" class="mensagem" role="status"></p>
+            </form>
+        </section>
+
+        <section class="painel">
+            <div class="painel-cabecalho">
+                <div>
                     <span class="sobretitulo">SEGURANÇA</span>
                     <h2>Histórico de acessos</h2>
                     <p>Consulte as tentativas de acesso registradas pelo sistema.</p>

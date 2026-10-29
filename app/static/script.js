@@ -14,6 +14,8 @@ const mensagemCadastro = document.getElementById("mensagem-cadastro");
 const listaColaboradores = document.getElementById("lista-colaboradores");
 const botaoAtualizarColaboradores = document.getElementById("atualizar-colaboradores");
 
+const seletorColaboradorCartao = document.getElementById("colaborador-cartao");
+
 const listaRegistros = document.getElementById("lista-registros");
 const botaoAtualizarRegistros = document.getElementById("atualizar-registros");
 const mensagemRegistros = document.getElementById("mensagem-registros");
@@ -105,6 +107,38 @@ async function atualizarColaboradores() {
     }
 }
 
+async function carregarColaboradoresCartao() {
+    if (!seletorColaboradorCartao) return;
+
+    try {
+        const resposta = await fetch("/api/colaboradores");
+
+        if (!resposta.ok) {
+            throw new Error("Não foi possível carregar os colaboradores.");
+        }
+
+        const colaboradores = await resposta.json();
+
+        seletorColaboradorCartao.replaceChildren();
+
+        const opcaoInicial = document.createElement("option");
+        opcaoInicial.value = "";
+        opcaoInicial.textContent = "Selecione um colaborador";
+        seletorColaboradorCartao.appendChild(opcaoInicial);
+
+        colaboradores
+            .filter((colaborador) => Number(colaborador.ativo) === 1)
+            .forEach((colaborador) => {
+                const opcao = document.createElement("option");
+                opcao.value = colaborador.id;
+                opcao.textContent = colaborador.nome;
+                seletorColaboradorCartao.appendChild(opcao);
+            });
+    } catch (erro) {
+        console.error("Erro ao carregar colaboradores para cartões:", erro);
+    }
+}
+
 async function cadastrarColaborador(evento) {
     evento.preventDefault();
 
@@ -131,7 +165,9 @@ async function cadastrarColaborador(evento) {
 
         mensagemCadastro.textContent = dados.mensagem;
         formulario.reset();
+
         await atualizarColaboradores();
+        await carregarColaboradoresCartao();
     } catch (erro) {
         mensagemCadastro.textContent = erro.message;
     } finally {
@@ -205,7 +241,7 @@ botaoAtualizarRegistros.addEventListener("click", atualizarRegistros);
 
 atualizarStatus();
 atualizarColaboradores();
+carregarColaboradoresCartao();
 atualizarRegistros();
 
 setInterval(atualizarStatus, 10000);
-setInterval(atualizarRegistros, 5000);
